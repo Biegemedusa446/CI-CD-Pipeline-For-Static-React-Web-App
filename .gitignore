@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+
+# Production build output
+build/
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# SonarQube analysis folder
+.scannerwork/
+
+# Temporary files and directories
+*.tmp
+*.temp
+*.swp
+.DS_Store
+
+# IDE-specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Coverage directory for testing
+coverage/
+*.lcov
+
+# Package lock files (optional, based on preference)
+package-lock.json
+
+# React specific
+public/favicon.ico
+public/manifest.json
+
+# System files
+Thumbs.db
+.DS_Store
