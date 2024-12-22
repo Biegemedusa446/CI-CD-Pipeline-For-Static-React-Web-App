@@ -22,32 +22,19 @@ jobs:
         working-directory: ./my-react-app
         run: npm install
 
-      # Step 4: Install SonarScanner
-      - name: Install SonarScanner
-        run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-          unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-          mv sonar-scanner-4.8.0.2856-linux sonar-scanner
-          echo "PATH=$PATH:$GITHUB_WORKSPACE/sonar-scanner/bin" >> $GITHUB_ENV
-
-      # Step 5: Verify SonarScanner Installation
-      - name: Verify SonarScanner
-        run: sonar-scanner --version
-
-      # Step 6: Run SonarQube Analysis
-      - name: Run SonarQube Analysis
+      # Step 4: SonarQube Code Analysis
+      - name: SonarQube Code Scan
+        uses: SonarSource/sonarqube-scan-action@v2
+        with:
+          projectBaseDir: ./my-react-app
+          args: >
+            -Dsonar.organization=my-org
+            -Dsonar.projectKey=my-Java-web-app
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/target/**,**/test/**,**/node_modules/**,**/*.class
         env:
-          SONAR_HOST_URL: http://localhost:9000
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        working-directory: ./my-react-app
-        run: |
-          sonar-scanner \
-            -Dsonar.projectBaseDir=./ \
-            -Dsonar.projectKey=Automated-Static-Website-Deployment-Using-React-and-GitHub-Actions \
-            -Dsonar.sources=src \
-            -Dsonar.exclusions=**/node_modules/**,**/*.test.js,**/build/** \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   deploy:
     name: Deploy to Production
