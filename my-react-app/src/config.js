@@ -3,11 +3,11 @@ const ENV = process.env.REACT_APP_ENV || 'production';
 const configs = {
   production: {
     environment: 'production',
-    featureFlag: false,
+    featureFlag: true,
   },
   staging: {
     environment: 'staging',
-    featureFlag: true,
+    featureFlag: false,
 
   },
 };
