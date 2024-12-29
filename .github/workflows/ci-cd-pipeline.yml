@@ -22,20 +22,26 @@ jobs:
         working-directory: ./my-react-app
         run: npm install
 
-      # Step 4: Run SonarQube Analysis
-      - name: Run SonarQube Analysis
-        env:
-          SONAR_HOST_URL: http://localhost:9000
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # Step 3: Run Unit Tests and Generate Coverage
+      - name: Run Unit Tests
         working-directory: ./my-react-app
-        run: |
-          npx sonar-scanner \
-            -Dsonar.projectBaseDir=./ \
-            -Dsonar.sources=src \
-            -Dsonar.exclusions=**/node_modules/**,**/*.test.js,**/build/**,src/reportWebVitals.js,src/setupTests.js \
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+        run: npm test -- --coverage
+        env:
+          CI: true
+
+      # Step 4: Run SonarCloud Analysis
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: ./my-react-app
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_SCANNER_EXTRA_ARGS: >
+            -Dsonar.sources=src
+            -Dsonar.exclusions=**/node_modules/**,**/*.test.js,**/build/**
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
 
       # Step 5: Build React App
       - name: Build React Application
