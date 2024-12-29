@@ -31,7 +31,6 @@ jobs:
           SONAR_ORGANIZATION: biegemedusa446
           SONAR_PROJECT_KEY: Biegemedusa446_CI-CD-Pipeline-For-Static-React-Web-App
           SONAR_SCANNER_EXTRA_ARGS: >
-            -Dsonar.qualitygate.wait=false
             -Dsonar.sources=src
             -Dsonar.exclusions=**/node_modules/**,**/*.test.js,**/build/**
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
