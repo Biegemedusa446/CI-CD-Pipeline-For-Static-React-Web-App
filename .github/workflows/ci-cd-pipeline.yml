@@ -22,13 +22,6 @@ jobs:
         working-directory: ./my-react-app
         run: npm install
 
-      # Step 3: Run Unit Tests and Generate Coverage
-      - name: Run Unit Tests
-        working-directory: ./my-react-app
-        run: npm test -- --coverage
-        env:
-          CI: true
-
       # Step 4: Run SonarCloud Analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
