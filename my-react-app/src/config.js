@@ -3,14 +3,14 @@ const ENV = process.env.REACT_APP_ENV || 'staging';
 const configs = {
   production: {
     environment: 'production',
-    featureFlag: true,
+    featureFlag: false,
   },
   staging: {
     environment: 'staging',
-    featureFlag: false,
+    featureFlag: true,
 
   },
 };
 
-const config = configs[ENV];
+const config = 'staging';
 export default config;
