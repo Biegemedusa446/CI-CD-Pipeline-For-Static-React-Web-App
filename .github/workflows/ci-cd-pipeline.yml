@@ -27,7 +27,7 @@ jobs:
         with:
           projectBaseDir: ./my-react-app
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: c6c9f2e21569fcd43d5b9d94f3462232a55f13f3
           SONAR_ORGANIZATION: biegemedusa446
           SONAR_PROJECT_KEY: Biegemedusa446_CI-CD-Pipeline-For-Static-React-Web-App
           SONAR_SCANNER_EXTRA_ARGS: >
