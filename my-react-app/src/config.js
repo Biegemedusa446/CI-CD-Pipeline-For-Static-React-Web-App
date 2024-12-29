@@ -12,5 +12,5 @@ const configs = {
   },
 };
 
-const config = configs[ENV];
+const config = 'production';
 export default config;
