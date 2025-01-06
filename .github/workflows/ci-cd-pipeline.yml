@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - staging
+env:
+  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -57,9 +59,12 @@ jobs:
 
       # Step 3: Deploy to Netlify
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v2
-        with:
-          publish-dir: ./my-react-app/build
-          production-deploy: true
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.PRODUCTION_NETLIFY_SITE_ID }}
+        id: netlify_deploy
+        run: |
+         prod_flag=""
+         if [ "$BRANCH_NAME" = "main" ]; then prod_flag="--prod"; fi
+         netlify deploy \
+           --dir dist \
+           --site ${{ secrets.PRODUCTION_NETLIFY_SITE_ID }} \
+           --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} \
+           $prod_flag      
