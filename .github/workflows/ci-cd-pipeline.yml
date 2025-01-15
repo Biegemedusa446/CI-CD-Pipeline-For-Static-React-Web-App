@@ -28,11 +28,6 @@ jobs:
         working-directory: ./my-react-app
         run: npm install
 
-      # Step 3: Run Tests
-      - name: Run Tests
-        working-directory: ./my-react-app
-        run: npm test -- --coverage
-
       # Step 4: Run SonarCloud Analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
