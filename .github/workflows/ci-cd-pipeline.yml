@@ -67,4 +67,4 @@ jobs:
         run: |
           prod_flag=""
           if [ "$BRANCH_NAME" = "main" ]; then prod_flag="--prod"; fi
-          curl -X POST -d '{}' ${{ secrets.NETLIFY_BUILD_HOOK_URL }} # Replace with your actual Build Hook URL
+          curl -X POST -d '{}' ${{ secrets.NETLIFY_BUILD_HOOK_URL }}
