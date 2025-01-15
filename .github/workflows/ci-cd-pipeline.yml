@@ -5,6 +5,11 @@ on:
     branches:
       - main
       - staging
+  pull_request:
+    branches:
+      - main
+      - staging
+
 env:
   BRANCH_NAME: ${{ github.ref_name }}
 
@@ -23,13 +28,22 @@ jobs:
         working-directory: ./my-react-app
         run: npm install
 
+      # Step 3: Run Lint and Tests
+      - name: Run Lint
+        working-directory: ./my-react-app
+        run: npm run lint
+
+      - name: Run Tests
+        working-directory: ./my-react-app
+        run: npm test -- --coverage
+
       # Step 4: Run SonarCloud Analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./my-react-app
         env:
-          SONAR_TOKEN: c6c9f2e21569fcd43d5b9d94f3462232a55f13f3
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_ORGANIZATION: biegemedusa446
           SONAR_PROJECT_KEY: Biegemedusa446_CI-CD-Pipeline-For-Static-React-Web-App
           SONAR_SCANNER_EXTRA_ARGS: >
@@ -64,10 +78,10 @@ jobs:
       - name: Deploy to Netlify
         id: netlify_deploy
         run: |
-         prod_flag=""
-         if [ "$BRANCH_NAME" = "main" ]; then prod_flag="--prod"; fi
-         netlify deploy \
-           --dir ./my-react-app/build
-           --site ${{ secrets.PRODUCTION_NETLIFY_SITE_ID }} \
-           --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} \
-           $prod_flag      
+          prod_flag=""
+          if [ "$BRANCH_NAME" = "main" ]; then prod_flag="--prod"; fi
+          netlify deploy \
+            --dir ./my-react-app/build \
+            --site ${{ secrets.PRODUCTION_NETLIFY_SITE_ID }} \
+            --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} \
+            $prod_flag
