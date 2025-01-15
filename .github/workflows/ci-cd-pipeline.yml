@@ -72,7 +72,7 @@ jobs:
           prod_flag=""
           if [ "$BRANCH_NAME" = "main" ]; then prod_flag="--prod"; fi
           netlify deploy \
-            --dir ./my-react-app
+            --dir ./my-react-app/build \
             --site ${{ secrets.PRODUCTION_NETLIFY_SITE_ID }} \
             --auth ${{ secrets.NETLIFY_AUTH_TOKEN }} \
             $prod_flag
