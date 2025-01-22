@@ -15,7 +15,7 @@ env:
 
 jobs:
   build:
-    name: Build, Test, and Analyze
+    name: Build, Test, Analyze, and Scan
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,19 @@ jobs:
       - name: Install Dependencies
         working-directory: ./my-react-app
         run: npm install
+
+      # Step 3: Trivy Security Scan
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          severity: HIGH,CRITICAL
+          exit-code: 0
+          ignore-unfixed: true
+          format: table
+          output: trivy-results.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 4: Run SonarCloud Analysis
       - name: SonarCloud Scan
