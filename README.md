@@ -12,10 +12,9 @@ This documentation outlines the setup and configuration of a CI/CD pipeline for 
 4. [Prerequisites](#prerequisites)
 5. [Setup Instructions](#setup-instructions)
 6. [Secrets Configuration](#secrets-configuration)
-7. [YAML Configuration](#yaml-configuration)
-8. [Netlify Build Hook Setup](#netlify-build-hook-setup)
-9. [How It Works](#how-it-works)
-10. [Known Issues and Debugging](#known-issues-and-debugging)
+7. [Netlify Build Hook Setup](#netlify-build-hook-setup)
+8. [How It Works](#how-it-works)
+9. [Known Issues and Debugging](#known-issues-and-debugging)
 
 ---
 
