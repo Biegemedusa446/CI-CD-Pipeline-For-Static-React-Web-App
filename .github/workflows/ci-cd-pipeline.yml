@@ -90,5 +90,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           netlify-site-id: ${{ env.NETLIFY_SITE_ID }}
+          working-directory: ./my-react-app
           build-dir: './my-react-app/build'
           comment-on-commit: true
