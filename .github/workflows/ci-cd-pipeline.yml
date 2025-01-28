@@ -5,10 +5,17 @@ on:
     branches:
       - main
       - staging
+  pull_request:
+    branches:
+      - main
+      - staging
+
+env:
+  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
   build:
-    name: Build, Test, and Analyze
+    name: Build, Test, Analyze, and Scan
     runs-on: ubuntu-latest
 
     steps:
@@ -21,13 +28,26 @@ jobs:
         working-directory: ./my-react-app
         run: npm install
 
+      # Step 3: Trivy Security Scan
+      - name: Run Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          severity: HIGH,CRITICAL
+          exit-code: 0
+          ignore-unfixed: true
+          format: table
+          output: trivy-results.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Step 4: Run SonarCloud Analysis
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           projectBaseDir: ./my-react-app
         env:
-          SONAR_TOKEN: c6c9f2e21569fcd43d5b9d94f3462232a55f13f3
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_ORGANIZATION: biegemedusa446
           SONAR_PROJECT_KEY: Biegemedusa446_CI-CD-Pipeline-For-Static-React-Web-App
           SONAR_SCANNER_EXTRA_ARGS: >
@@ -38,10 +58,17 @@ jobs:
       # Step 5: Build React App
       - name: Build React Application
         working-directory: ./my-react-app
-        run: npm run build
+        run: CI='' npm run build
+
+      # Step 6: Upload Build Artifact
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: ./my-react-app/build
 
   deploy:
-    name: Deploy to Production
+    name: Deploy React App to Netlify
     runs-on: ubuntu-latest
     needs: build
 
@@ -50,16 +77,32 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Install Dependencies
-      - name: Install Dependencies
-        working-directory: ./my-react-app
-        run: npm install
-
-      # Step 3: Deploy to Netlify
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v2
+      # Step 2: Download Build Artifact
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
         with:
-          publish-dir: ./my-react-app/build
-          production-deploy: true
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          name: build
+          path: ./my-react-app/build
+
+      # Step 3: Set Netlify Site ID Based on Branch
+      - name: Set Netlify Site ID
+        id: set-site-id
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "NETLIFY_SITE_ID=${{ secrets.PRODUCTION_NETLIFY_SITE_ID }}" >> $GITHUB_ENV
+          elif [ "${{ github.ref_name }}" = "staging" ]; then
+            echo "NETLIFY_SITE_ID=${{ secrets.STAGING_NETLIFY_SITE_ID }}" >> $GITHUB_ENV
+          else
+            echo "Unknown branch: ${{ github.ref_name }}"
+            exit 1
+          fi
+
+      # Step 4: Deploy to Netlify Using GitHub Action
+      - name: Deploy to Netlify
+        uses: South-Paw/action-netlify-deploy@v1.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-site-id: ${{ env.NETLIFY_SITE_ID }}
+          build-dir: './my-react-app/build'
+          comment-on-commit: true
