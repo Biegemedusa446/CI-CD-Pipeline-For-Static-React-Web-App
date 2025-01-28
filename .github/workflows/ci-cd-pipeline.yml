@@ -60,6 +60,13 @@ jobs:
         working-directory: ./my-react-app
         run: CI='' npm run build
 
+      # Step 6: Upload Build Artifact
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: ./my-react-app/build
+
   deploy:
     name: Deploy React App to Netlify
     runs-on: ubuntu-latest
@@ -70,7 +77,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set Netlify Site ID Based on Branch
+      # Step 2: Download Build Artifact
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: ./my-react-app/build
+
+      # Step 3: Set Netlify Site ID Based on Branch
       - name: Set Netlify Site ID
         id: set-site-id
         run: |
@@ -83,13 +97,12 @@ jobs:
             exit 1
           fi
 
-      # Step 3: Deploy to Netlify Using GitHub Action
+      # Step 4: Deploy to Netlify Using GitHub Action
       - name: Deploy to Netlify
         uses: South-Paw/action-netlify-deploy@v1.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           netlify-site-id: ${{ env.NETLIFY_SITE_ID }}
-          working-directory: ./my-react-app
           build-dir: './my-react-app/build'
           comment-on-commit: true
