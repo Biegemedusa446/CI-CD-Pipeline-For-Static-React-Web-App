@@ -29,7 +29,6 @@ This job installs dependencies, runs a security scan, analyzes the code, and bui
 
 3. **Trivy Security Scan:**  
    - Utilizes `aquasecurity/trivy-action@master` to scan the codebase for vulnerabilities of severity `HIGH` or `CRITICAL`.  
-   - Results are saved in `trivy-results.txt`.  
 
 4. **SonarCloud Analysis:**  
    - Leverages `SonarSource/sonarcloud-github-action@v2` to perform static code analysis.  
