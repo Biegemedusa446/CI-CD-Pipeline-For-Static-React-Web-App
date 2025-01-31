@@ -1,83 +1,95 @@
-# Automated Static Website Deployment Using React and GitHub Actions
+# 🚀 Automated Static Website Deployment Using React and GitHub Actions  
 
-This repository contains the configuration for a CI/CD pipeline for a React application using GitHub Actions and Netlify Build Hooks. The pipeline automates the process of building, testing, analyzing, and deploying the application. Below is a detailed explanation of the workflow.
+This repository contains the configuration for a CI/CD pipeline for a React application using GitHub Actions and Netlify Build Hooks. The pipeline automates the process of building, testing, analyzing, and deploying the application.  
 
-## Workflow Overview
+<details>
+<summary><strong>📖 Workflow Overview</strong></summary>  
+<strong>Workflow Name:</strong> `CI/CD Pipeline for React App`  
 
-### Workflow Name: `CI/CD Pipeline for React App`
+### 🎯 Trigger Events:  
+- Pushes to the `main` or `staging` branches.  
+- Pull requests targeting the `main` or `staging` branches.  
 
-#### Trigger Events:
-- Pushes to the `main` or `staging` branches.
-- Pull requests targeting the `main` or `staging` branches.
+### 🔧 Environment Variables:  
+- `BRANCH_NAME`: Determines the branch name for conditional steps.  
+</details>  
 
-#### Environment Variables:
-- `BRANCH_NAME`: Determines the branch name for conditional steps.
+<details>
+<summary><strong>🛠 Jobs in the Workflow</strong></summary>  
 
-### Jobs in the Workflow
+### ✅ Build, Test, Analyze, and Scan  
+This job installs dependencies, runs a security scan, analyzes the code, and builds the React application.  
 
-#### 1. Build, Test, Analyze, and Scan
-This job installs dependencies, runs a security scan, analyzes the code, and builds the React application.
+#### 🔹 Steps:  
+1. **Checkout Code:**  
+   - Uses the `actions/checkout@v3` action to fetch the latest code.  
 
-**Steps:**
-1. **Checkout Code:**
-   - Uses the `actions/checkout@v3` action to fetch the latest code.
+2. **Install Dependencies:**  
+   - Navigates to the `my-react-app` directory and runs `npm install` to install the required dependencies.  
 
-2. **Install Dependencies:**
-   - Navigates to the `my-react-app` directory and runs `npm install` to install the required dependencies.
+3. **Trivy Security Scan:**  
+   - Utilizes `aquasecurity/trivy-action@master` to scan the codebase for vulnerabilities of severity `HIGH` or `CRITICAL`.  
+   - Results are saved in `trivy-results.txt`.  
 
-3. **Trivy Security Scan:**
-   - Utilizes the `aquasecurity/trivy-action` to scan the codebase for vulnerabilities of severity `HIGH` or `CRITICAL`.
-   - Results are saved in `trivy-results.txt`.
+4. **SonarCloud Analysis:**  
+   - Leverages `SonarSource/sonarcloud-github-action@v2` to perform static code analysis.  
+   - Configuration includes project keys and repository secrets.  
 
-4. **SonarCloud Analysis:**
-   - Leverages the `SonarSource/sonarcloud-github-action@v2` to perform static code analysis.
-   - SonarCloud configuration is set via repository secrets for security.
+5. **Build React Application:**  
+   - Runs `CI='' npm run build` to create a production build of the React application.  
 
-5. **Build React Application:**
-   - Runs `npm run build` to create a production build of the React application.
+6. **Upload Build Artifact:**  
+   - Uses `actions/upload-artifact@v4` to store the build for deployment.  
+</details>  
 
-#### 2. Trigger Netlify Build Hook
-This job triggers a Netlify build hook to deploy the application after the build is successful.
+<details>
+<summary><strong>🚀 Deploy React App to Netlify</strong></summary>  
+This job deploys the React application to Netlify after a successful build.  
 
-**Steps:**
-1. **Checkout Code:**
-   - Uses the `actions/checkout@v3` action.
+#### 🔹 Steps:  
+1. **Checkout Code:**  
+   - Uses the `actions/checkout@v3` action.  
 
-2. **Install Dependencies (Optional):**
-   - Runs `npm install` if additional setup is required for the deployment step.
+2. **Download Build Artifact:**  
+   - Retrieves the build files using `actions/download-artifact@v4`.  
 
-3. **Trigger Netlify Build Hook:**
-   - Executes a `curl` command to POST to the Netlify build hook URL stored in `NETLIFY_BUILD_HOOK_URL` secret.
+3. **Set Netlify Site ID Based on Branch:**  
+   - Assigns the appropriate Netlify site ID depending on whether the branch is `main` or `staging`.  
 
-## Special Notes
-- **SonarCloud Local Setup:**
-  The SonarCloud scan was configured to run exclusively in the CI/CD pipeline instead of using a local Docker setup. This decision was made because of persistent `connection refused` errors with local Docker and the high cost of using AWS as an alternative.
+4. **Deploy to Netlify:**  
+   - Uses `South-Paw/action-netlify-deploy@v1.2.0` for deployment.  
+   - Configured with GitHub secrets for authentication.  
+</details>  
 
-- **Security Considerations:**
-  All sensitive tokens (e.g., `SONAR_TOKEN`, `NETLIFY_BUILD_HOOK_URL`, `GITHUB_TOKEN`) are stored securely as GitHub repository secrets.
+<details>
+<summary><strong>🔐 Security Considerations</strong></summary>  
+- All sensitive tokens (e.g., `SONAR_TOKEN`, `NETLIFY_AUTH_TOKEN`, `GITHUB_TOKEN`, `PRODUCTION_NETLIFY_SITE_ID`, `STAGING_NETLIFY_SITE_ID`) are securely stored as GitHub repository secrets.  
+</details>  
 
-## Prerequisites
-- A React application located in the `my-react-app` directory.
-- Netlify Build Hook URL added as a repository secret (`NETLIFY_BUILD_HOOK_URL`).
-- SonarCloud project configuration with organization and project keys.
-- Trivy for security scanning configured with the `aquasecurity/trivy-action`.
+<details>
+<summary><strong>⚙️ Prerequisites</strong></summary>  
+- A React application located in the `my-react-app` directory.  
+- Netlify authentication tokens and site IDs stored as secrets.  
+- SonarCloud project configuration with organization and project keys.  
+- Trivy for security scanning configured with `aquasecurity/trivy-action`.  
+</details>  
 
-## How to Use
-1. Clone the repository.
-2. Push code changes to `main` or `staging` branches to trigger the workflow.
-3. Monitor the pipeline's progress on the Actions tab of your GitHub repository.
-4. Verify deployment on Netlify.
+<details>
+<summary><strong>📌 How to Use</strong></summary>  
+1. Clone the repository.  
+2. Push code changes to `main` or `staging` branches to trigger the workflow.  
+3. Monitor the pipeline's progress on the Actions tab of your GitHub repository.  
+4. Verify deployment on Netlify.  
+</details>  
 
-## Limitations
-- The pipeline relies on external services (Netlify, SonarCloud), which may have rate limits or downtime.
-- Local SonarCloud analysis via Docker was not configured due to connectivity issues.
+<details>
+<summary><strong>⚠️ Limitations</strong></summary>  
+- The pipeline relies on external services (Netlify, SonarCloud), which may have rate limits or downtime.  
+- Local SonarCloud analysis via Docker was not configured due to connectivity issues.  
+</details>  
 
-## Troubleshooting
-- Ensure that all required secrets are added to the GitHub repository.
-- Verify the Netlify build hook URL is correct.
-- If Trivy scan results are too verbose, adjust the severity levels or output format as needed.
-
----
-
-Feel free to customize the workflow further to fit your project's needs. If you encounter any issues, consult the respective service documentation or reach out for assistance.
-
+<details>
+<summary><strong>🛠 Troubleshooting</strong></summary>  
+- Ensure that all required secrets are added to the GitHub repository.   
+- If Trivy scan results are too verbose, adjust the severity levels or output format as needed.  
+</details>  
