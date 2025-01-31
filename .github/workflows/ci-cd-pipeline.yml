@@ -33,10 +33,10 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
-          severity: CRITICAL
+          severity: HIGH
           exit-code: 1
           ignore-unfixed: true
-          format: table
+          format: tables
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
