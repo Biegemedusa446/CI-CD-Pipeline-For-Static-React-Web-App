@@ -37,7 +37,6 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
           format: table
-          output: trivy-results.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
