@@ -28,11 +28,12 @@ This job installs dependencies, runs a security scan, analyzes the code, and bui
    - Navigates to the `my-react-app` directory and runs `npm install` to install the required dependencies.  
 
 3. **Trivy Security Scan:**  
-   - Utilizes `aquasecurity/trivy-action@master` to scan the codebase for vulnerabilities of severity `HIGH` or `CRITICAL`.  
+   - Utilizes `aquasecurity/trivy-action@master` to scan the codebase for vulnerabilities of severity `CRITICAL`.  
+   - **Note:** I opted for the `CRITICAL` severity instead of `HIGH` to prevent false positives. Using `HIGH` severity could flag minor issues as high-priority vulnerabilities, which might cause the scan to fail unnecessarily.  
 
 4. **SonarCloud Analysis:**  
    - Leverages `SonarSource/sonarcloud-github-action@v2` to perform static code analysis.  
-   - Configuration includes project keys and repository secrets.  
+   - **Note:** There were issues with SonarCloud's **Automatic Analysis**, which caused the Pipeline to crash. This has been addressed by turning **Automatic Analysis** off in the SonarCloud Dashboard to avoid these failures.  
 
 5. **Build React Application:**  
    - Runs `CI='' npm run build` to create a production build of the React application.  
@@ -91,4 +92,4 @@ This job deploys the React application to Netlify after a successful build.
 <summary><strong>🛠 Troubleshooting</strong></summary>  
 - Ensure that all required secrets are added to the GitHub repository.   
 - If Trivy scan results are too verbose, adjust the severity levels or output format as needed.  
-</details>  
+</details>
