@@ -62,7 +62,7 @@ jobs:
 
       # Step 6: Upload Build Artifact
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
           path: ./my-react-app/build
@@ -79,7 +79,7 @@ jobs:
 
       # Step 2: Download Build Artifact
       - name: Download Build Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build
           path: ./my-react-app/build
