@@ -11,7 +11,7 @@ function App() {
         </div>
       </div>
       <footer className="footer">
-        <p>© 2025 Your Company. All Rights Reserved.</p>
+        <p>© 2025 DevOps. All Rights Reserved.</p>
       </footer>
     </div>
   );
