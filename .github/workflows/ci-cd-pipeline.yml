@@ -46,7 +46,7 @@ jobs:
         with:
           projectBaseDir: ./my-react-app
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: c6c9f2e21569fcd43d5b9d94f3462232a55f13f3
           SONAR_ORGANIZATION: biegemedusa446
           SONAR_PROJECT_KEY: Biegemedusa446_CI-CD-Pipeline-For-Static-React-Web-App
           SONAR_SCANNER_EXTRA_ARGS: >
@@ -88,9 +88,9 @@ jobs:
         id: set-site-id
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "NETLIFY_SITE_ID=${{ secrets.PRODUCTION_NETLIFY_SITE_ID }}" >> $GITHUB_ENV
+            echo "NETLIFY_SITE_ID=7dba7a58-02d8-4a48-a354-202a7f7720eb" >> $GITHUB_ENV
           elif [ "${{ github.ref_name }}" = "staging" ]; then
-            echo "NETLIFY_SITE_ID=${{ secrets.STAGING_NETLIFY_SITE_ID }}" >> $GITHUB_ENV
+            echo "NETLIFY_SITE_ID=6c92a9cc-69bb-4332-baf8-7e241755bd40" >> $GITHUB_ENV
           else
             echo "Unknown branch: ${{ github.ref_name }}"
             exit 1
@@ -101,7 +101,7 @@ jobs:
         uses: South-Paw/action-netlify-deploy@v1.2.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          netlify-auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify-auth-token: nfp_P2itdsVmayyDt5WSgZC2zzXtj274WgHY6b35
           netlify-site-id: ${{ env.NETLIFY_SITE_ID }}
           build-dir: './my-react-app/build'
           comment-on-commit: true
